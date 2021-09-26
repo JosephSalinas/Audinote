@@ -37,7 +37,25 @@
       </svg>
       <svg viewBox="0 0 24 24">
         <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
-    </svg>
+      </svg>
     </button>
+    <script>
+      /* Comment this code out to disable the demo change */
+      const record = document.getElementById("record");
+      record.addEventListener("click", ()=>{
+        if (record.classList.contains("inactive")) {
+          record.classList.remove("inactive")
+          setTimeout(()=>{
+            record.classList.add("recording")
+          }, 250)
+        }
+        else {
+          record.classList.remove("recording")
+          setTimeout(()=>{
+            record.classList.add("inactive")
+          }, 250)
+        }
+      })
+    </script>
   </body>
 </html>
