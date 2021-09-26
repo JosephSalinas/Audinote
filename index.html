@@ -4,12 +4,40 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <title>Project 13: Notetaking by Speech</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="scripts/main.js" defer></script>
   </head>
   <body>
-    Hello World!
+    <h1>Audinote</h1>
+    <div class="notes">
+      <div class="note">
+        <p class="text">This is a test note to test the UI of this app</p>
+        <p class="date">September 26th, 2021</p>
+      </div>
+      <div class="note">
+        <p class="text">This is a test note to test the UI of this app</p>
+        <p class="date">September 26th, 2021</p>
+      </div>
+      <div class="note">
+        <p class="text">This is a test note to test the UI of this app</p>
+        <p class="date">September 26th, 2021</p>
+      </div>
+      <div class="note">
+        <p class="text">This is a test note to test the UI of this app</p>
+        <p class="date">September 26th, 2021</p>
+      </div>
+    </div>
+    <button id="record" class="inactive">
+      <svg viewBox="0 0 24 24">
+        <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z" /> 
+      </svg>
+      <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+    </svg>
+    </button>
   </body>
 </html>

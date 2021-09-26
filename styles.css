@@ -1,0 +1,78 @@
+
+
+body {
+  font-family: "Inter", sans-serif;
+  --accent: #FCBD21;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px;
+  height: 100vh;
+  box-sizing: border-box;
+}
+h1 {
+  color: var(--accent);
+  font-size: 50px;
+  margin: 0;
+  width: 100%;
+}
+.notes {
+  display: flex;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+.note {
+  border: 4px solid var(--accent);
+  padding: 10px 15px;
+  border-radius: 15px;
+  margin: 10px;
+  max-width: 300px;
+  min-width: 200px;
+  flex: 1;
+}
+.note .text {
+  font-weight: bold;
+  font-size: 24px;
+  margin: 5px 0px;
+}
+.note .date {
+  font-weight: bold;
+  color: #aaa;
+  margin: 12px 0px 5px 0px;
+}
+#record {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  border: 4px solid var(--accent);
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px;
+  margin-top: auto;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+  cursor: pointer;
+}
+#record svg {
+  width: 40px;
+  height: 40px;
+  transition: fill 0.25s ease;
+}
+#record:hover {
+  background: var(--accent);
+  transform: scale(1.1);
+}
+#record:active {
+  transform: scale(0.9);
+}
+#record:hover>svg {
+  fill: white;
+}
+#record.inactive>svg {
+  
+}
