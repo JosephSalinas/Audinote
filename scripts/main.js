@@ -23,10 +23,12 @@ recognition.onresult = function (event) {
 
 function handleResults(transcript, confidence) {
   console.log("You said: " + transcript + " \nConfidence: " + confidence);
+  updateTextarea(` ${transcript}`);
 }
 
 let mainBtn = document.getElementById("record");
 let recording = false;
+const textarea = document.getElementById("testTextarea");
 
 mainBtn.addEventListener("click", () => {
   if (recording) {
@@ -52,4 +54,8 @@ function handleRecordingStop() {
 
 function manuallyStopRecording() {
   recognition.stop();
+}
+
+function updateTextarea(text) {
+  textarea.value += text;
 }
