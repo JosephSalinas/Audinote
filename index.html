@@ -31,6 +31,16 @@
         <p class="date">September 26th, 2021</p>
       </div>
     </div>
+    <div id="recording-result">
+      <div class="waveform" id="waveform">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <textarea></textarea>
+    </div>
     <button id="record" class="inactive">
       <svg viewBox="0 0 24 24">
         <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z" /> 
@@ -40,21 +50,16 @@
       </svg>
     </button>
     <script>
+      var isRecording = false
       /* Comment this code out to disable the demo change */
       const record = document.getElementById("record");
       record.addEventListener("click", ()=>{
-        if (record.classList.contains("inactive")) {
-          record.classList.remove("inactive")
-          setTimeout(()=>{
-            record.classList.add("recording")
-          }, 250)
-        }
-        else {
-          record.classList.remove("recording")
-          setTimeout(()=>{
-            record.classList.add("inactive")
-          }, 250)
-        }
+        isRecording = !isRecording;
+        record.classList.remove("inactive")
+        record.classList.remove("recording")
+        setTimeout(()=>{
+          record.classList.add(isRecording ? "recording" : "inactive")
+        }, 250)
       })
     </script>
   </body>
