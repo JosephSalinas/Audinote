@@ -2,6 +2,9 @@
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
 
+// recognition.interimResults = true;
+recognition.continuous = true;
+
 // This runs when the speech recognition service starts
 recognition.onstart = function () {
   console.log("We are listening. Speak!");
@@ -9,30 +12,44 @@ recognition.onstart = function () {
 
 // This runs when the speech recognition service returns result
 recognition.onresult = function (event) {
-  var transcript = event.results[0][0].transcript;
-  var confidence = event.results[0][0].confidence;
+  const result = event.results[event.results.length - 1][0];
+  const transcript = result.transcript;
+  const confidence = result.confidence;
   handleResults(transcript, confidence);
 };
 
 // start recognition
 // recognition.start();
 
-startBtn = document.getElementById("startBtn");
-stopBtn = document.getElementById("stopBtn");
-speechDump = document.getElementById("speechDump");
-
-startBtn.addEventListener("click", () => {
-  recognition.start();
-});
-
-stopBtn.addEventListener("click", () => {
-  recognition.stop();
-});
-
 function handleResults(transcript, confidence) {
-  speechDump.innerHTML =
-    "You said: " + transcript + " \nConfidence: " + confidence;
+  console.log("You said: " + transcript + " \nConfidence: " + confidence);
 }
 
 let mainBtn = document.getElementById("record");
 let recording = false;
+
+mainBtn.addEventListener("click", () => {
+  if (recording) {
+    handleRecordingStop();
+    manuallyStopRecording();
+  } else {
+    handleRecordingStart();
+  }
+});
+
+function handleRecordingStart() {
+  console.log("Reording started...");
+  recording = true;
+  mainBtn.className = "recording";
+  recognition.start();
+}
+
+function handleRecordingStop() {
+  console.log("Recording stopped");
+  recording = false;
+  mainBtn.className = "inactive";
+}
+
+function manuallyStopRecording() {
+  recognition.stop();
+}
