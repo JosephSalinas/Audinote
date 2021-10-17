@@ -59,3 +59,31 @@ function manuallyStopRecording() {
 function updateTextarea(text) {
   textarea.value += text;
 }
+
+let cardsLocal = [];
+
+function getManifest() {
+  if (localStorage.manifest) {
+    return;
+  }
+}
+
+// A Note is a {title: String, body: String, createdAt: Number}
+// __ -> Array of Note Objects
+/**
+ * @returns notes : Note[]
+ */
+function getNotes() {
+  const manifest = localStorage.manifest;
+  if (manifest) {
+    noteIds = JSON.parse(manifest);
+  } else {
+    //
+  }
+
+  localStorage[`note-${id}`];
+}
+
+function makeCard(title, body, date) {
+  cardsLocal.push({ title, body, date });
+}
