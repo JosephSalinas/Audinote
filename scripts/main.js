@@ -62,28 +62,36 @@ function updateTextarea(text) {
 
 let cardsLocal = [];
 
-function getManifest() {
-  if (localStorage.manifest) {
-    return;
-  }
-}
-
 // A Note is a {title: String, body: String, createdAt: Number}
 // __ -> Array of Note Objects
 /**
  * @returns notes : Note[]
  */
-function getNotes() {
+function getNoteIds() {
   const manifest = localStorage.manifest;
   if (manifest) {
-    noteIds = JSON.parse(manifest);
+    return JSON.parse(manifest);
   } else {
-    //
+    return [];
   }
+}
 
-  localStorage[`note-${id}`];
+/**
+ * Fetches the notes for each ID in a list
+ * @param ids : ID[]
+ * @returns Note[]
+ */
+function idsToNotes(ids) {
+  return ids.map((id) => {
+    return localStorage[`note-${id}`];
+  });
 }
 
 function makeCard(title, body, date) {
   cardsLocal.push({ title, body, date });
 }
+
+/**
+ * Converts a Note to an element
+ * @param note : Note
+ */
