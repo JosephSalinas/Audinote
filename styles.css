@@ -22,9 +22,10 @@ h1 {
   display: flex;
   margin-top: 20px;
   flex-wrap: wrap;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   overflow: auto;
+  align-items: stretch
 }
 .note {
   border: 4px solid #bbb;
@@ -39,8 +40,12 @@ h1 {
 .note:hover {
   border-color: var(--accent);
 }
-.note .text {
+.note .title {
   font-weight: bold;
+  font-size: 24px;
+  margin: 5px 0px;
+}
+.note .text {
   font-size: 24px;
   margin: 5px 0px;
 }
@@ -183,6 +188,12 @@ h1 {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+#recording-result.hidden {
+  display: none;
+}
+
+
 .waveform {
   width: 190px;
   height: 100px;
