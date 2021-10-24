@@ -122,14 +122,21 @@ h1 {
 }
 .dim-overlay {
   background: black;
-  opacity: 0.3;
+  opacity: 0;
   width: 100vw;
   height: 100vh;
   position: absolute;
   top: 0px;
+  pointer-events: none;
+}
+.dim-overlay.visible {
+  opacity: 0.3;
 }
 #recording-result.waiting {
   border-color: var(--live-accent);
+}
+#recording-result.waiting input {
+  display: none;
 }
 #recording-result.waiting textarea {
   display: none;
@@ -138,6 +145,8 @@ h1 {
   display: none;
 }
 #recording-result {
+  display: flex;
+  flex-direction: column;
   width: 300px;
   border: 5px solid var(--accent);
   border-radius: 12px;
@@ -152,7 +161,7 @@ h1 {
 #recording-result textarea {
   font-family: "Inter", sans-serif;
   font-size: 26px;
-  font-weight: bold;
+  /* font-weight: regular; */
   width: 100%;
   height: 100%;
   border: 0px;
@@ -161,6 +170,18 @@ h1 {
   margin-top: 0px;
   margin-bottom: 0px;
   height: 400px;
+}
+#recording-result input {
+  font-family: "Inter", sans-serif;
+  font-size: 26px;
+  font-weight: bold;
+  width: 100%;
+  height: 100%;
+  border: 0px;
+  outline: none;
+  resize: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 .waveform {
   width: 190px;

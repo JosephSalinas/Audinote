@@ -91,7 +91,45 @@ function makeCard(title, body, date) {
   cardsLocal.push({ title, body, date });
 }
 
+/* <div class="note">
+  <p class="text">This is a test note to test the UI of this app</p>
+  <p class="date">September 26th, 2021</p>
+</div> */
+
 /**
- * Converts a Note to an element
- * @param note : Note
+ * Converts a Note to an Element
+ * @param Note
+ * @returns Element
  */
+function noteToElem({title, body, createdAt}) {
+  let div = document.createElement("div")
+  div.classList.add("note")
+  let bodyp = document.createElement("p")
+  bodyp.textContent = body
+  bodyp.classList.add("text")
+  let dateelem = document.createElement("p")
+  let formattedDate = Date(createdAt).toLocaleDateString()
+  dateelem.textContent = formattedDate
+  dateelem.classList.add("date")
+  div.append(bodyp, dateelem)
+  return div
+}
+
+const notesElem = document.getElementById("notes")
+
+function initializeNotes() {
+  let ids = getNoteIds()
+  let notes = idsToNotes(ids)
+  let noteElems = notes.map(note => noteToElem(note))
+  addNotesToPage(noteElems)
+}
+
+/**
+ * Inserts a list of note elements into the page
+ * @param notes Element[] 
+ */
+function addNotesToPage(notes) {
+  let frag = document.createDocumentFragment()
+  notes.forEach(note => frag.append(note))
+  notesElem.append(frag)
+}

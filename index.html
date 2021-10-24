@@ -16,7 +16,7 @@
   </head>
   <body>
     <h1>Audinote</h1>
-    <div class="notes">
+    <div class="notes" id="notes">
       <div class="note">
         <p class="text">This is a test note to test the UI of this app</p>
         <p class="date">September 26th, 2021</p>
@@ -34,8 +34,8 @@
         <p class="date">September 26th, 2021</p>
       </div>
     </div>
-    <div class="dim-overlay"></div>
-    <div id="recording-result" class="editing">
+    <div class="dim-overlay visible"></div>
+    <div id="recording-result" class="editing" >
       <div class="waveform" id="waveform">
         <div></div>
         <div></div>
@@ -43,6 +43,7 @@
         <div></div>
         <div></div>
       </div>
+      <input type="text" placeholder="Untitled">
       <textarea id="testTextarea"></textarea>
     </div>
     <button id="record" class="inactive">
