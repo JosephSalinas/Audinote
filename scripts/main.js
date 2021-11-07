@@ -1,10 +1,13 @@
 let recording = false;
 let noteId = false;
+let noteElem = false;
 let noteOpen = false;
+const notes = document.getElementById("notes")
 const mainBtn = document.getElementById("record");
 const textarea = document.getElementById("testTextarea");
 const modal = document.getElementById("recording-result");
 const overlay = document.getElementById("dim-overlay");
+const noteTitle = document.getElementById("noteTitle");
 
 // new speech recognition object
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -22,7 +25,7 @@ recognition.onstart = function () {
 // This runs when the speech recognition service returns result
 recognition.onresult = function (event) {
   const result = event.results[event.results.length - 1][0];
-  console.log(event.results)
+  // (event.results)
   const transcript = result.transcript;
   const confidence = result.confidence;
   handleResults(transcript, confidence);
@@ -42,7 +45,7 @@ function closeModal() {
   noteOpen = false
   overlay.classList.remove("visible")
   modal.classList.add("hidden")
-  modal.classList.remove("hidden")
+  modal.classList.remove("waiting")
   modal.classList.remove("editing")
 }
 function modalEditing() {
@@ -58,6 +61,16 @@ function modalRecording() {
   modal.classList.remove("hidden")
   modal.classList.remove("editing")
   modal.classList.add("waiting")
+}
+
+function stopEditing() {
+  closeModal()
+  recognition.stop()
+  noteId = false
+  noteElem = false
+  noteOpen = false
+  recording = false
+  clearModal()
 }
 
 function newNote() {
@@ -95,9 +108,30 @@ function stopRecording() {
 }
 
 function finishNote() {
-  if (noteId) {
-
+  const title = noteTitle.value.trim()
+  const body = textarea.value.trim()
+  // If the title or body is empty, prevent saving the note
+  if (title == "" || body == "") {
+    if (title == "" && body == "" && !noteId) stopEditing()
+    return
   }
+  
+  if (noteId) {
+    console.log("Would Save:", noteId, noteTitle.value, textarea.value)
+    storage.updateNote(noteId, noteTitle.value, textarea.value)
+    updateNote(storage.getNote(noteId), noteElem)
+  }
+  else {
+    const id = storage.addNote(title, body, Date.now())
+    const note = storage.getNote(id)
+    notes.prepend(noteToElem(note))
+  }
+  stopEditing()
+}
+
+function updateNote({title, body}, elem) {
+  elem.children[0].textContent = title
+  elem.children[1].textContent = body
 }
 
 function updateTextarea(text) {
@@ -107,35 +141,6 @@ function updateTextarea(text) {
   else {
     textarea.value = text;
   }
-}
-
-
-
-let cardsLocal = [];
-
-// A Note is a {title: String, body: String, createdAt: Number}
-// __ -> Array of Note Objects
-/**
- * @returns notes : Note[]
- */
-// function getNoteIds() {
-//   const manifest = localStorage.manifest;
-//   if (manifest) {
-//     return JSON.parse(manifest);
-//   } else {
-//     return [];
-//   }
-// }
-
-/**
- * Fetches the notes for each ID in a list
- * @param ids : ID[]
- * @returns Note[]
- */
-function idsToNotes(ids) {
-  return ids.map((id) => {
-    return localStorage[`note-${id}`];
-  });
 }
 
 function makeCard(title, body, date) {
@@ -156,9 +161,12 @@ function makeNote(title, body, createdAt) {
  * @param Note
  * @returns Element
  */
-function noteToElem({ title, body, createdAt }) {
+function noteToElem({ title, body, createdAt, id }) {
   let div = document.createElement("div");
   div.classList.add("note");
+  let titlep = document.createElement("p")
+  titlep.textContent = title
+  titlep.classList.add("title")
   let bodyp = document.createElement("p");
   bodyp.textContent = body;
   bodyp.classList.add("text");
@@ -166,70 +174,41 @@ function noteToElem({ title, body, createdAt }) {
   let formattedDate = new Date(createdAt).toLocaleDateString();
   dateelem.textContent = formattedDate;
   dateelem.classList.add("date");
-  div.append(bodyp, dateelem);
+  div.append(titlep, bodyp, dateelem);
+  div.addEventListener("click", ()=>{
+    editNote(div, id)
+  })
   return div;
 }
 
 const notesElem = document.getElementById("notes");
 
-// function initializeNotes() {
-//   let ids = getNoteIds();
-//   let notes = idsToNotes(ids);
-//   let noteElems = notes.map((note) => noteToElem(note));
-//   addNotesToPage(noteElems);
-// }
-
-/**
- * Inserts a list of note elements into the page
- * @param notes Element[]
- */
-// function addNotesToPage(notes) {
-//   let frag = document.createDocumentFragment();
-//   notes.forEach((note) => frag.append(note));
-//   notesElem.append(frag);
-// }
-
-// function updateManifest(new_id) {
-//   const manifest = localStorage.manifest
-//   let manifest_arr
-//   if (manifest) {
-//     manifest_arr = JSON.parse(manifest);
-//   } else {
-//     manifest_arr = [];
-//   }
-//   return manifest_arr.push(new_id)
-
-// }
-
-/**
- *
- * @param {Number} new_id
- * @returns Void
- * Mutates manifest on LS by adding the new id to it
- */
-// function updateManifest(new_id) {
-//   const oldManifest = JSON.parse(localStorage.getItem("manifest")) ?? [];
-//   localStorage.setItem("manifest", JSON.stringify([...oldManifest, new_id]));
-// }
-
-/**
- *
- * @param {Number} id
- * @param {Note Object} note
- * @returns Void
- *
- * Adds note at specified ID to local storage
- */
-// function persistNote(id, note) {
-//   localStorage.setItem(`note-${id}`, JSON.stringify(note));
-// }
-
-function addNote(title, body) {
-  const createdAt = Date.now();
-  const note = makeNote(title, body, createdAt);
-  const ids = getNoteIds();
-  const last_id = ids[ids.length - 1] ?? 0;
-  const curr_id = last_id + 1;
-  updateManifest(curr_id);
-  persistNote(curr_id, note);
+function clearModal() {
+  noteTitle.value = ""
+  textarea.value = ""
 }
+
+function noteIntoModal({title, body}) {
+  noteTitle.value = title
+  textarea.value = body
+}
+
+function editNote(elem, id) {
+  noteElem = elem
+  noteId = id
+  noteIntoModal(storage.getNote(id))
+  modalEditing()
+}
+
+function initializeNotes() {
+  const notesList = storage.getAllNotes()
+  notesList.sort((n1, n2)=>n2.createdAt - n1.createdAt)
+  const frag = document.createDocumentFragment()
+  frag.append(...notesList.map(noteToElem))
+  notes.append(frag)
+}
+initializeNotes()
+
+overlay.addEventListener("click", ()=>{
+  finishNote()
+})

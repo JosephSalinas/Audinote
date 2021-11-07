@@ -137,6 +137,7 @@ h1 {
 }
 .dim-overlay.visible {
   opacity: 0.3;
+  pointer-events: all;
 }
 #recording-result.waiting {
   border-color: var(--live-accent);
