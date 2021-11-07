@@ -1,9 +1,18 @@
+let recording = false;
+let noteId = false;
+let noteOpen = false;
+const mainBtn = document.getElementById("record");
+const textarea = document.getElementById("testTextarea");
+const modal = document.getElementById("recording-result");
+const overlay = document.getElementById("dim-overlay");
+
 // new speech recognition object
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
 
 // recognition.interimResults = true;
 recognition.continuous = true;
+recognition.maxAlternatives = 0;
 
 // This runs when the speech recognition service starts
 recognition.onstart = function () {
@@ -13,6 +22,7 @@ recognition.onstart = function () {
 // This runs when the speech recognition service returns result
 recognition.onresult = function (event) {
   const result = event.results[event.results.length - 1][0];
+  console.log(event.results)
   const transcript = result.transcript;
   const confidence = result.confidence;
   handleResults(transcript, confidence);
@@ -23,42 +33,83 @@ recognition.onresult = function (event) {
 
 function handleResults(transcript, confidence) {
   console.log("You said: " + transcript + " \nConfidence: " + confidence);
-  updateTextarea(` ${transcript}`);
+  if (noteOpen) {
+    updateTextarea(`${transcript}`);
+  }
 }
 
-let mainBtn = document.getElementById("record");
-let recording = false;
-const textarea = document.getElementById("testTextarea");
+function closeModal() {
+  noteOpen = false
+  overlay.classList.remove("visible")
+  modal.classList.add("hidden")
+  modal.classList.remove("hidden")
+  modal.classList.remove("editing")
+}
+function modalEditing() {
+  noteOpen = true
+  overlay.classList.add("visible")
+  modal.classList.remove("hidden")
+  modal.classList.add("editing")
+  modal.classList.remove("waiting")
+}
+function modalRecording() {
+  noteOpen = true
+  overlay.classList.add("visible")
+  modal.classList.remove("hidden")
+  modal.classList.remove("editing")
+  modal.classList.add("waiting")
+}
+
+function newNote() {
+  modalRecording()
+  startRecording()
+}
 
 mainBtn.addEventListener("click", () => {
-  if (recording) {
-    handleRecordingStop();
-    manuallyStopRecording();
-  } else {
-    handleRecordingStart();
+  if (!noteOpen) {
+    newNote()
+  }
+  else {
+    if (recording) {
+      modalEditing()
+      stopRecording()
+    } else {
+      modalRecording()
+      startRecording()
+    }
   }
 });
 
-function handleRecordingStart() {
+function startRecording() {
   console.log("Reording started...");
   recording = true;
   mainBtn.className = "recording";
   recognition.start();
 }
 
-function handleRecordingStop() {
+function stopRecording() {
+  recognition.stop()
   console.log("Recording stopped");
   recording = false;
   mainBtn.className = "inactive";
 }
 
-function manuallyStopRecording() {
-  recognition.stop();
+function finishNote() {
+  if (noteId) {
+
+  }
 }
 
 function updateTextarea(text) {
-  textarea.value += text;
+  if (textarea.value.length > 0) {
+    textarea.value += " " + text;
+  }
+  else {
+    textarea.value = text;
+  }
 }
+
+
 
 let cardsLocal = [];
 
@@ -67,14 +118,14 @@ let cardsLocal = [];
 /**
  * @returns notes : Note[]
  */
-function getNoteIds() {
-  const manifest = localStorage.manifest;
-  if (manifest) {
-    return JSON.parse(manifest);
-  } else {
-    return [];
-  }
-}
+// function getNoteIds() {
+//   const manifest = localStorage.manifest;
+//   if (manifest) {
+//     return JSON.parse(manifest);
+//   } else {
+//     return [];
+//   }
+// }
 
 /**
  * Fetches the notes for each ID in a list
@@ -121,22 +172,22 @@ function noteToElem({ title, body, createdAt }) {
 
 const notesElem = document.getElementById("notes");
 
-function initializeNotes() {
-  let ids = getNoteIds();
-  let notes = idsToNotes(ids);
-  let noteElems = notes.map((note) => noteToElem(note));
-  addNotesToPage(noteElems);
-}
+// function initializeNotes() {
+//   let ids = getNoteIds();
+//   let notes = idsToNotes(ids);
+//   let noteElems = notes.map((note) => noteToElem(note));
+//   addNotesToPage(noteElems);
+// }
 
 /**
  * Inserts a list of note elements into the page
  * @param notes Element[]
  */
-function addNotesToPage(notes) {
-  let frag = document.createDocumentFragment();
-  notes.forEach((note) => frag.append(note));
-  notesElem.append(frag);
-}
+// function addNotesToPage(notes) {
+//   let frag = document.createDocumentFragment();
+//   notes.forEach((note) => frag.append(note));
+//   notesElem.append(frag);
+// }
 
 // function updateManifest(new_id) {
 //   const manifest = localStorage.manifest
@@ -156,10 +207,10 @@ function addNotesToPage(notes) {
  * @returns Void
  * Mutates manifest on LS by adding the new id to it
  */
-function updateManifest(new_id) {
-  const oldManifest = JSON.parse(localStorage.getItem("manifest")) ?? [];
-  localStorage.setItem("manifest", JSON.stringify([...oldManifest, new_id]));
-}
+// function updateManifest(new_id) {
+//   const oldManifest = JSON.parse(localStorage.getItem("manifest")) ?? [];
+//   localStorage.setItem("manifest", JSON.stringify([...oldManifest, new_id]));
+// }
 
 /**
  *
@@ -169,9 +220,9 @@ function updateManifest(new_id) {
  *
  * Adds note at specified ID to local storage
  */
-function persistNote(id, note) {
-  localStorage.setItem(`note-${id}`, JSON.stringify(note));
-}
+// function persistNote(id, note) {
+//   localStorage.setItem(`note-${id}`, JSON.stringify(note));
+// }
 
 function addNote(title, body) {
   const createdAt = Date.now();

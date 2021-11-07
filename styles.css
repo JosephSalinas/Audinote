@@ -36,6 +36,7 @@ h1 {
   min-width: 200px;
   flex: 1;
   transition: border-color 0.25s ease;
+  cursor: pointer;
 }
 .note:hover {
   border-color: var(--accent);
