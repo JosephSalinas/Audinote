@@ -163,7 +163,7 @@ function noteToElem({ title, body, createdAt }) {
   bodyp.textContent = body;
   bodyp.classList.add("text");
   let dateelem = document.createElement("p");
-  let formattedDate = Date(createdAt).toLocaleDateString();
+  let formattedDate = new Date(createdAt).toLocaleDateString();
   dateelem.textContent = formattedDate;
   dateelem.classList.add("date");
   div.append(bodyp, dateelem);
@@ -228,7 +228,7 @@ function addNote(title, body) {
   const createdAt = Date.now();
   const note = makeNote(title, body, createdAt);
   const ids = getNoteIds();
-  const last_id = ids[ids.length - 1];
+  const last_id = ids[ids.length - 1] ?? 0;
   const curr_id = last_id + 1;
   updateManifest(curr_id);
   persistNote(curr_id, note);
