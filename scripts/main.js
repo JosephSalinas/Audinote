@@ -9,6 +9,8 @@ const modal = document.getElementById("recording-result");
 const overlay = document.getElementById("dim-overlay");
 const noteTitle = document.getElementById("noteTitle");
 
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
 // new speech recognition object
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
@@ -171,8 +173,7 @@ function noteToElem({ title, body, createdAt, id }) {
   bodyp.textContent = body;
   bodyp.classList.add("text");
   let dateelem = document.createElement("p");
-  let formattedDate = new Date(createdAt).toLocaleDateString();
-  dateelem.textContent = formattedDate;
+  dateelem.textContent = dateToString(createdAt);
   dateelem.classList.add("date");
   div.append(titlep, bodyp, dateelem);
   div.addEventListener("click", ()=>{
@@ -212,3 +213,15 @@ initializeNotes()
 overlay.addEventListener("click", ()=>{
   finishNote()
 })
+
+function numToOrdinal(num) {
+  if ([1, 11, 21, 31].includes(num)) return `${num}st`
+  if ([2, 12, 22].includes(num)) return `${num}nd`
+  if ([3, 13, 23].includes(num)) return `${num}rd`
+  return `${num}th`
+}
+
+function dateToString(ts) {
+  let date = new Date(ts)
+  return `${MONTHS[date.getMonth()]} ${numToOrdinal(date.getDate())}, ${date.getFullYear()}`
+}
