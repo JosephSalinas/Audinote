@@ -17,8 +17,9 @@ class NoteStorage {
     }
     else {
       const storageResult = JSON.parse(localStorage.getItem(`note-${id}`))
-      this.noteCache[id] = storageResult
-      return storageResult
+      const note = {id: id, ...storageResult}
+      this.noteCache[id] = note
+      return note
     }
   }
   /**
@@ -56,7 +57,7 @@ class NoteStorage {
   addNote(title, body, createdAt) {
     const id = this.nextId()
     this.manifest = [...this.manifest, id]
-    const noteObj = {title, body, createdAt}
+    const noteObj = {title, body, createdAt, id}
     this.noteCache[id] = noteObj
     localStorage.setItem(`note-${id}`, JSON.stringify(noteObj))
     this.persistManifest()
