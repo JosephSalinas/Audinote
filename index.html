@@ -47,20 +47,33 @@
         <div></div>
       </div>
       <input type="text" placeholder="Untitled" id="noteTitle" />
-      <textarea id="testTextarea"></textarea>
+      <textarea id="testTextarea" placeholder="Type something..."></textarea>
     </div>
-    <button id="record" class="inactive">
-      <svg viewBox="0 0 24 24">
-        <path
-          d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"
-        />
-      </svg>
-      <svg viewBox="0 0 24 24">
-        <path
-          d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"
-        />
-      </svg>
-    </button>
+    <div class="buttons" id="buttons">
+      <div id="noteDelete" class="small-button">
+        <svg viewBox="0 0 24 24">
+          <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+        </svg>
+      </div>
+      <button id="record" class="inactive">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"
+          />
+        </svg>
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"
+          />
+        </svg>
+      </button>
+      <div id="noteDone" class="small-button">
+        <svg viewBox="0 0 24 24">
+          <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+        </svg>
+      </div>
+    </div>
+    
     <!-- <script>
       var isRecording = false
       /* Comment this code out to disable the demo change */

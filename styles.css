@@ -25,7 +25,8 @@ h1 {
   /* align-items: center; */
   justify-content: center;
   overflow: auto;
-  align-items: stretch
+  align-items: stretch;
+  align-self: flex-start;
 }
 .note {
   border: 4px solid #bbb;
@@ -35,13 +36,20 @@ h1 {
   max-width: 300px;
   min-width: 200px;
   flex: 1;
-  transition: border-color 0.25s ease;
+  transition: border-color 0.25s ease, transform 0.15s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
 }
 .note:hover {
   border-color: var(--accent);
+}
+.note:active {
+  transform: scale(1.03);
+}
+.note.selected {
+  transform: scale(1.08);
+  border-color: #777;
 }
 .note .title {
   font-weight: bold;
@@ -52,12 +60,161 @@ h1 {
   font-size: 24px;
   margin: 0px 0px;
   flex-grow: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 .note .date {
   font-weight: bold;
   color: #aaa;
   margin: 12px 0px 5px 0px;
 }
+
+.dim-overlay {
+  background: black;
+  opacity: 0;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0px;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.dim-overlay.visible {
+  opacity: 0.3;
+  pointer-events: all;
+}
+#recording-result.waiting {
+  border-color: var(--live-accent);
+}
+#recording-result.waiting input {
+  display: none;
+}
+#recording-result.waiting textarea {
+  display: none;
+}
+#recording-result:not(.waiting) .waveform {
+  display: none;
+}
+
+#recording-result.hidden {
+  transform: translateY(-20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+
+#recording-result {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  border: 5px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px 20px;
+  position: absolute;
+  background: white;
+  bottom: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(0px);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0px);
+  }
+  10% {
+    transform: translateX(-7px);
+  }
+  30% {
+    transform: translateX(7px);
+  }
+  50% {
+    transform: translateX(-7px);
+  }
+  70% {
+    transform: translateX(7px);
+  }
+  80% {
+    transform: translateX(0px);
+  }
+}
+
+#recording-result.shake {
+  animation: shake 0.6s ease;
+}
+#recording-result textarea {
+  font-family: "Inter", sans-serif;
+  font-size: 26px;
+  /* font-weight: regular; */
+  width: 100%;
+  height: 100%;
+  border: 0px;
+  outline: none;
+  resize: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  height: 400px;
+}
+#recording-result input {
+  font-family: "Inter", sans-serif;
+  font-size: 26px;
+  font-weight: bold;
+  width: 100%;
+  height: 100%;
+  border: 0px;
+  outline: none;
+  resize: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+
+
+
+.waveform {
+  width: 190px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  margin: 30px 0px;
+}
+.waveform div {
+  flex: 1;
+  height: 100%;
+  background: var(--live-accent);
+  margin: 0px 5px;
+  border-radius: 30px;
+}
+.waveform div:first-child {
+  animation: wave 1.3s ease infinite;
+  animation-delay: 0s;
+}
+.waveform div:nth-child(2) {
+  animation: wave 1.3s ease infinite;
+  animation-delay: 0.2s;
+}
+.waveform div:nth-child(3) {
+  animation: wave 1.3s ease infinite;
+  animation-delay: 0.4s;
+}
+.waveform div:nth-child(4) {
+  animation: wave 1.3s ease infinite;
+  animation-delay: 0.6s;
+}
+.waveform div:nth-child(5) {
+  animation: wave 1.3s ease infinite;
+  animation-delay: 0.8s;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+}
+
 #record {
   width: 80px;
   height: 80px;
@@ -72,6 +229,7 @@ h1 {
   transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
   position: relative;
+  flex-shrink: 0;
 }
 #record:hover {
   background: var(--accent);
@@ -129,107 +287,48 @@ h1 {
     height: 100%;
   }
 }
-.dim-overlay {
-  background: black;
+
+.buttons:not(.all) .small-button {
   opacity: 0;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0px;
   pointer-events: none;
+  transform: translateY(10px);
 }
-.dim-overlay.visible {
-  opacity: 0.3;
-  pointer-events: all;
-}
-#recording-result.waiting {
-  border-color: var(--live-accent);
-}
-#recording-result.waiting input {
-  display: none;
-}
-#recording-result.waiting textarea {
-  display: none;
-}
-#recording-result.editing .waveform {
-  display: none;
-}
-#recording-result {
+
+.small-button {
+  width: 50px;
+  height: 50px;
   display: flex;
-  flex-direction: column;
-  width: 300px;
-  border: 5px solid var(--accent);
-  border-radius: 12px;
-  padding: 20px 20px;
-  position: absolute;
+  fill: black;
   background: white;
-  bottom: 130px;
-  display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 40px;
+  transition: background 0.25s ease, fill 0.25s ease, transform 0.25s ease, opacity 0.5s ease;
+  position: relative;
 }
-#recording-result textarea {
-  font-family: "Inter", sans-serif;
-  font-size: 26px;
-  /* font-weight: regular; */
-  width: 100%;
-  height: 100%;
-  border: 0px;
-  outline: none;
-  resize: none;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  height: 400px;
+.small-button:hover {
+  fill: white;
+  transform: scale(1.1);
 }
-#recording-result input {
-  font-family: "Inter", sans-serif;
-  font-size: 26px;
-  font-weight: bold;
-  width: 100%;
-  height: 100%;
-  border: 0px;
-  outline: none;
-  resize: none;
-  margin-top: 0px;
-  margin-bottom: 0px;
+.small-button:active {
+  transform: scale(0.9);
+}
+.small-button svg {
+  width: 32px;
+  position: absolute;
+}
+#noteDelete {
+  border: 3px solid #d6171a;
+  margin-right: 20px;
+}
+#noteDelete:hover {
+  background: #d6171a;
+}
+#noteDone {
+  border: 3px solid #17b752;
+  margin-left: 20px;
+}
+#noteDone:hover {
+  background: #17b752;
 }
 
-#recording-result.hidden {
-  display: none;
-}
-
-
-.waveform {
-  width: 190px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  margin: 30px 0px;
-}
-.waveform div {
-  flex: 1;
-  height: 100%;
-  background: var(--live-accent);
-  margin: 0px 5px;
-  border-radius: 30px;
-}
-.waveform div:first-child {
-  animation: wave 1.3s ease infinite;
-  animation-delay: 0s;
-}
-.waveform div:nth-child(2) {
-  animation: wave 1.3s ease infinite;
-  animation-delay: 0.2s;
-}
-.waveform div:nth-child(3) {
-  animation: wave 1.3s ease infinite;
-  animation-delay: 0.4s;
-}
-.waveform div:nth-child(4) {
-  animation: wave 1.3s ease infinite;
-  animation-delay: 0.6s;
-}
-.waveform div:nth-child(5) {
-  animation: wave 1.3s ease infinite;
-  animation-delay: 0.8s;
-}

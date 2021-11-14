@@ -1,15 +1,25 @@
-let recording = false;
-let noteId = false;
-let noteElem = false;
-let noteOpen = false;
+let recording = false
+let noteId = false
+let noteElem = false
+let noteOpen = false
 const notes = document.getElementById("notes")
-const mainBtn = document.getElementById("record");
-const textarea = document.getElementById("testTextarea");
-const modal = document.getElementById("recording-result");
-const overlay = document.getElementById("dim-overlay");
-const noteTitle = document.getElementById("noteTitle");
+const mainBtn = document.getElementById("record")
+const textarea = document.getElementById("testTextarea")
+const modal = document.getElementById("recording-result")
+const overlay = document.getElementById("dim-overlay")
+const noteTitle = document.getElementById("noteTitle")
+const buttons = document.getElementById("buttons")
+const noteDelete = document.getElementById("noteDelete")
+const noteDone = document.getElementById("noteDone")
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+noteDelete.addEventListener("click", ()=>{
+  deleteNote()
+})
+noteDone.addEventListener("click", ()=>{
+  finishNote()
+})
 
 // new speech recognition object
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -49,6 +59,7 @@ function closeModal() {
   modal.classList.add("hidden")
   modal.classList.remove("waiting")
   modal.classList.remove("editing")
+  buttons.classList.remove("all")
 }
 function modalEditing() {
   noteOpen = true
@@ -56,6 +67,7 @@ function modalEditing() {
   modal.classList.remove("hidden")
   modal.classList.add("editing")
   modal.classList.remove("waiting")
+  buttons.classList.add("all")
 }
 function modalRecording() {
   noteOpen = true
@@ -63,16 +75,20 @@ function modalRecording() {
   modal.classList.remove("hidden")
   modal.classList.remove("editing")
   modal.classList.add("waiting")
+  buttons.classList.add("all")
 }
 
 function stopEditing() {
   closeModal()
-  recognition.stop()
+  stopRecording()
   noteId = false
+  if (noteElem) noteElem.classList.remove("selected")
   noteElem = false
   noteOpen = false
   recording = false
-  clearModal()
+  setTimeout(()=>{
+    clearModal()
+  }, 400)
 }
 
 function newNote() {
@@ -95,26 +111,52 @@ mainBtn.addEventListener("click", () => {
   }
 });
 
+function updateRecordButton() {
+  mainBtn.classList.remove(recording ? "inactive" : "recording")
+  setTimeout(()=>{
+    mainBtn.classList.add(recording ? "recording" : "inactive")
+  }, 150)
+}
+
+function shakeModal() {
+  modal.classList.add("shake")
+  setTimeout(()=>{
+    modal.classList.remove("shake")
+  }, 1000)
+}
+
 function startRecording() {
-  console.log("Reording started...");
-  recording = true;
-  mainBtn.className = "recording";
-  recognition.start();
+  recognition.start()
+  recording = true
+  updateRecordButton()
+  console.log("Recording started...")
 }
 
 function stopRecording() {
   recognition.stop()
-  console.log("Recording stopped");
-  recording = false;
-  mainBtn.className = "inactive";
+  recording = false
+  updateRecordButton()
+  console.log("Recording stopped")
+}
+
+function deleteNote() {
+  if (noteId) {
+    storage.deleteNote(noteId)
+    noteElem.parentNode.removeChild(noteElem)
+  }
+  stopEditing()
 }
 
 function finishNote() {
   const title = noteTitle.value.trim()
   const body = textarea.value.trim()
   // If the title or body is empty, prevent saving the note
-  if (title == "" || body == "") {
-    if (title == "" && body == "" && !noteId) stopEditing()
+  if (title == "" && body == "" && !noteId) {
+    stopEditing()
+    return
+  }
+  else if (title == "" || body == "") {
+    shakeModal()
     return
   }
   
@@ -185,8 +227,10 @@ function noteToElem({ title, body, createdAt, id }) {
 const notesElem = document.getElementById("notes");
 
 function clearModal() {
-  noteTitle.value = ""
-  textarea.value = ""
+  if (!noteOpen) {
+    noteTitle.value = ""
+    textarea.value = ""
+  }
 }
 
 function noteIntoModal({title, body}) {
@@ -197,6 +241,7 @@ function noteIntoModal({title, body}) {
 function editNote(elem, id) {
   noteElem = elem
   noteId = id
+  elem.classList.add("selected")
   noteIntoModal(storage.getNote(id))
   modalEditing()
 }
