@@ -140,7 +140,7 @@ function stopRecording() {
 }
 
 function deleteNote() {
-  if (noteId) {
+  if (noteId !== false) {
     storage.deleteNote(noteId)
     noteElem.parentNode.removeChild(noteElem)
   }
@@ -151,7 +151,7 @@ function finishNote() {
   const title = noteTitle.value.trim()
   const body = textarea.value.trim()
   // If the title or body is empty, prevent saving the note
-  if (title == "" && body == "" && !noteId) {
+  if (title == "" && body == "" && noteId === false) {
     stopEditing()
     return
   }
@@ -160,7 +160,7 @@ function finishNote() {
     return
   }
   
-  if (noteId) {
+  if (noteId !== false) {
     console.log("Would Save:", noteId, noteTitle.value, textarea.value)
     storage.updateNote(noteId, noteTitle.value, textarea.value)
     updateNote(storage.getNote(noteId), noteElem)
